@@ -23,7 +23,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 
         // On charge le fichier INI
         // *** Lecture Fichier Regions.ini *** 
-        $filename = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."Regions/Regions.ini";
+        $filename = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."/bin/"."Regions/Regions.ini";
 
         if (file_exists($filename)) {;}
         else {echo "<div class='alert alert-danger alert-anim'> <trong>$filename </trong>".$osmw_erreur_file_exist."</div>";}
@@ -204,7 +204,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
     // ******************************************************
     // ******************************************************
     // *** Lecture Fichier Regions.ini ***
-    $filename2 = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."Regions/Regions.ini";
+    $filename2 = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."/bin/"."Regions/Regions.ini";
 
     if (file_exists($filename2)) {$filename = $filename2;}
     else
@@ -257,7 +257,8 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
     echo '<th>Delete</th>';
     echo '</tr>';
 
-    while (list($key, $val) = each($tableauIni))
+    #while (list($key, $val) = each($tableauIni))
+    foreach($tableauIni as $key => $val )
     {
         echo '<tr>';
 		echo '<form class="form-group" method="post" action="">';

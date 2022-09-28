@@ -53,28 +53,29 @@ if (isset($_SESSION['authentification']))
     // *******************************************************
     // Parcours des serveur installes
 
-    $db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-    mysql_select_db($database, $db);
+    $db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+    mysqli_select_db($db,$database);
 
     $sql = 'SELECT * FROM moteurs';
-    $req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
+    $req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
 
-    while($data = mysql_fetch_assoc($req))
+    while($data = mysqli_fetch_assoc($req))
     {
         // Pour chaque serveur
-        $tableauIni = parse_ini_file($data['address']."Regions/Regions.ini", true);
+        $tableauIni = parse_ini_file($data['address']."/bin/"."Regions/Regions.ini", true);
 
         if ($tableauIni == FALSE)
         {
-            echo 'Probleme Lecture Fichier .ini '.$data['address']."Regions/Regions.ini".'<br>';
+            echo 'Probleme Lecture Fichier .ini '.$data['address']."/bin/"."Regions/Regions.ini".'<br>';
         }
 
         // echo '<p>Serveur Name:'.$data['name'].' - Version:'.$data['version'].'</p>';
         // while (list($keyi, $vali) = each($tableauIni))
-        while (list($keyi) = each($tableauIni))
+        // while (list($keyi) = each($tableauIni))
+        foreach( $tableauIni as $keyi => $vali )
         {
 			// *** Recuperation du port Http du Simulateur
-			$srvOS  = RecupPortHTTP_Opensim($data['address'].$FichierINIOpensim, "http_listener_port");
+			$srvOS  = RecupPortHTTP_Opensim($data['address']."/bin/".$FichierINIOpensim, "http_listener_port");
 
             // Recuperation des valeurs ET enregistrement des valeurs dans le tableau
             // echo $key.$tableauIni[$key]['RegionUUID'].$tableauIni[$key]['Location'].$tableauIni[$key]['InternalPort'].'<br>';
@@ -88,10 +89,10 @@ if (isset($_SESSION['authentification']))
             $Matrice[$coordX][$coordY]['ip']        = $tableauIni[$keyi]['ExternalHostName'];
             $Matrice[$coordX][$coordY]['port']      = $tableauIni[$keyi]['InternalPort'];	
             $Matrice[$coordX][$coordY]['uuid']      = $key.$tableauIni[$keyi]['RegionUUID'];
-            $Matrice[$coordX][$coordY]['hypergrid'] = $data[hypergrid];
+            $Matrice[$coordX][$coordY]['hypergrid'] = $data["hypergrid"];
         }
     }
-    mysql_close();
+    mysqli_close($db);
 
     // ****************************
     // *** Map en construction ****

@@ -27,11 +27,11 @@
 		
 		// Formulaire de choix du moteur a selectionne
 		// On se connecte a MySQL
-		$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-		mysql_select_db($database,$db);
+		$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+		mysqli_select_db($db,$database);
 		
 		$sql = 'SELECT * FROM moteurs';
-		$req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
+		$req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
 		
 
 		echo '<form class="form-group" method="post" action="">';	
@@ -39,7 +39,7 @@
 		echo '<label for="OSSelect"></label>';
 		echo '<select class="form-control" name="OSSelect">';
 
-		while($data = mysql_fetch_assoc($req))
+		while($data = mysqli_fetch_assoc($req))
 		{
 			$sel = "";
 			if ($data['id_os'] == $_SESSION['opensim_select']) {$sel = "selected";}
@@ -51,7 +51,7 @@
 		echo '</div>';
 		echo'</form>';
 
-		mysql_close();
+		mysqli_close($db);
 	}		
 	
 	/* ************************************ */
@@ -152,12 +152,12 @@
     {
         require 'inc/config.php';
         // on se connecte à MySQL
-        $db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-        mysql_select_db($database,$db);
+        $db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+        mysqli_select_db($db, $database);
         
         $sql = "SELECT * FROM config";
-        $req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
-        $data = mysql_fetch_array($req);
+        $req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error($db));
+        $data = mysqli_fetch_array($req);
         
         switch ($valeur)
         {
@@ -182,7 +182,7 @@
                 $Version = $data['urlOSMW'];
                 break;
             }
-            mysql_close();
+            mysqli_close($db);
         return $Version;
     }
 
@@ -193,11 +193,11 @@
     {
         require 'inc/config.php';
         // On se connecte à MySQL
-        $db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-        mysql_select_db($database,$db);
+        $db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+        mysqli_select_db($db, $database);
         $sql = "SELECT * FROM moteurs WHERE id_os ='".$cles."'";
-        $req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
-        $data = mysql_fetch_array($req);
+        $req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
+        $data = mysqli_fetch_array($req);
         $Version = "";
 
         switch ($valeur)
@@ -223,7 +223,7 @@
                 $Version = $data['id_os'];
                 break;
             }
-            mysql_close();
+            mysqli_close($db);
         return $Version;
     }
 
@@ -234,12 +234,12 @@
     {
         require 'inc/config.php';
         // on se connecte à MySQL
-        $db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-        mysql_select_db($database,$db);
+        $db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+        mysqli_select_db($db, $database);
         $sql = "SELECT * FROM moteurs";
-        $req = mysql_query($sql); 
-		$num_rows = mysql_num_rows($req);
-		mysql_close();
+        $req = mysqli_query($db,$sql); 
+		$num_rows = mysqli_num_rows($req);
+		mysqli_close($db);
         return $num_rows;
     }
 

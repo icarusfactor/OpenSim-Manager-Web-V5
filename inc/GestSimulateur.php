@@ -31,8 +31,8 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 	//******************************************************
 	if (isset($_POST['cmd']))
 	{
-			$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-			mysql_select_db($database, $db);
+			$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+			mysqli_select_db($db, $database);
 			
 		if($_POST['cmd'] == 'Ajouter')
 		{
@@ -61,7 +61,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 		{	
 			$sqlIns = "INSERT INTO moteurs (`osAutorise` ,`id_os` ,`name` ,`version` ,`address` , `DB_OS`, `hypergrid`)
                         VALUES (NULL , '".$_POST['NewName']."', '".$_POST['NewName']."', '".$_POST['version']."', '".$_POST['address']."', '".$_POST['DB_OS']."', '".$_POST['hypergrid']."')";
-			$reqIns = mysql_query($sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysql_error());
+			$reqIns = mysqli_query($db,$sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysqli_error($db));
             
 			echo "<p class='alert alert-success alert-anim'>";
             echo "<i class='glyphicon glyphicon-ok'></i>";
@@ -81,7 +81,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
                     hypergrid = '".$_POST['hypergrid']."'
                 WHERE osAutorise = '".$_POST['osAutorise']."'
             ";
-            $reqIns = mysql_query($sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysql_error());
+            $reqIns = mysqli_query($db,$sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysqli_error($db));
 			echo "<p class='alert alert-success alert-anim'>";
             echo "<i class='glyphicon glyphicon-ok'></i>";
             echo " ".$osmw_simu." <strong>".$_POST['NewName']."</strong> ".$osmw_edit_user_ok."</p>";
@@ -90,7 +90,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 		if($_POST['cmd'] == 'Supprimer')
 		{			
 			$sqlIns = "DELETE FROM moteurs WHERE `moteurs`.`osAutorise` = ".$_POST['osAutorise'];
-			$reqIns = mysql_query($sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysql_error());
+			$reqIns = mysqli_query($db,$sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysqli_error($db));
 			echo "<p class='alert alert-success alert-anim'>";
             echo "<i class='glyphicon glyphicon-ok'></i>";
             echo " ".$osmw_simu." <strong>".$_POST['NewName']."</strong> ".$osmw_delete_user_ok."</p>";
@@ -113,12 +113,12 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
     echo '<th>Delete</th>';
 	echo '</tr>';
 	
-	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-	mysql_select_db($database, $db);
+	$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+	mysqli_select_db($db,$database);
 	// *** Lecture BDD config  ***
 	$sql = 'SELECT * FROM moteurs';
-	$req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
-	while($data = mysql_fetch_assoc($req))
+	$req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
+	while($data = mysqli_fetch_assoc($req))
 	{
 		echo '<tr>';
 		echo '<form method=post action="">';
@@ -137,7 +137,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 		echo '</tr>';
 	}
 	echo '</table>';
-    mysql_close();
+    mysqli_close($db);
 }
 else {header('Location: index.php');}
 ?>

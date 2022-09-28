@@ -24,8 +24,8 @@ if (isset($_SESSION['authentification']))
     //******************************************************
     if (isset($_POST['cmd']))
 	{
-		$RemotePort = RecupRAdminParam_Opensim(INI_Conf_Moteur($_SESSION['opensim_select'], "address").$FichierINIOpensim, " port = ");
-		$access_password2 = RecupRAdminParam_Opensim(INI_Conf_Moteur($_SESSION['opensim_select'], "address").$FichierINIOpensim, " access_password = ");
+		$RemotePort = RecupRAdminParam_Opensim(INI_Conf_Moteur($_SESSION['opensim_select'], "address")."/bin/".$FichierINIOpensim, " port = ");
+		$access_password2 = RecupRAdminParam_Opensim(INI_Conf_Moteur($_SESSION['opensim_select'], "address")."/bin/".$FichierINIOpensim, " access_password = ");
 		
         $myRemoteAdmin = new RemoteAdmin(trim($hostnameSSH), trim($RemotePort), trim($access_password2));
 		

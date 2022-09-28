@@ -34,13 +34,13 @@ if (isset($_SESSION['authentification']))
     // *******************************************************	
     // Lecture des regions.ini et enregistrement dans Matrice
     // *******************************************************
-    $db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-    mysql_select_db($database,$db);
+    $db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+    mysqli_select_db($db, $database);
 	$sql = 'SELECT * FROM moteurs WHERE id_os="'.$_SESSION['opensim_select'].'"';
-    $req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
+    $req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
 
 		
-    while ($data = mysql_fetch_assoc($req))
+    while ($data = mysqli_fetch_assoc($req))
 	{
         $hypergrid = "";
 		$hypergrid = $data['hypergrid'];
@@ -48,7 +48,7 @@ if (isset($_SESSION['authentification']))
 
         if ($hypergrid <> "")
         {
-			$tableauIni = parse_ini_file($data['address']."Regions/".$FichierINIRegions, true);
+			$tableauIni = parse_ini_file($data['address']."/bin/"."Regions/".$FichierINIRegions, true);
 
             if ($tableauIni == FALSE && $data['name'] == $_SESSION['opensim_select'])
             {
@@ -60,9 +60,10 @@ if (isset($_SESSION['authentification']))
             $cpt = 0;
             echo  '<div class="row">';
 
-            while (list($keyi, $vali) = each($tableauIni))
+            #while (list($keyi, $vali) = each($tableauIni))
+            foreach( $tableauIni as $keyi => $vali )
             {
-                $filename = $data['address'].$FichierINIOpensim;
+                $filename = $data['address']."/bin/".$FichierINIOpensim;
                 if (!$fp = fopen($filename, "r"))
                 {
                     echo '<div class="alert alert-danger alert-anim" role="alert">';
@@ -111,7 +112,7 @@ if (isset($_SESSION['authentification']))
             echo '</div>';
         }
     }
-    mysql_close();	
+    mysqli_close($db);	
 	
 }
 ?>

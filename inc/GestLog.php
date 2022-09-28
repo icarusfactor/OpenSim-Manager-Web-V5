@@ -46,9 +46,9 @@ if (isset($_SESSION['authentification']))
 
 	echo Select_Simulateur($_SESSION['opensim_select']);
 	
-	$fichierLog = INI_Conf_Moteur($_SESSION['opensim_select'], "address").'OpenSim.log';
+	$fichierLog = INI_Conf_Moteur($_SESSION['opensim_select'], "address").'/bin/'.'OpenSim.log';
 	
-    if (file_exists(INI_Conf_Moteur($_SESSION['opensim_select'], "address").'OpenSim.log'))
+    if (file_exists(INI_Conf_Moteur($_SESSION['opensim_select'], "address").'/bin/'.'OpenSim.log'))
     {
         echo '<div class="alert alert-success alert-anim" role="alert">';
         echo "File exist: <strong>" .$fichierLog.'</strong>';

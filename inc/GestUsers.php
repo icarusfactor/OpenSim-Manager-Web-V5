@@ -23,8 +23,8 @@ if (isset($_SESSION['authentification']))
     //  Affichage page principale
     //******************************************************
 	
-	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-	mysql_select_db($database,$db);
+	$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+	mysqli_select_db($db,$database);
 
 	if (isset($_POST['cmd']))
 	{
@@ -37,27 +37,27 @@ if (isset($_SESSION['authentification']))
 		{
 			//echo $_POST['id_user'];echo $_POST['firstname'];echo $_POST['lastname'];echo $_POST['password'];
 			
-			$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-			mysql_select_db($database,$db);
+			$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+			mysqli_select_db($db,$database);
 			
 			// *** Lecture BDD users  ***
 			$UserSelected = explode(" ", $_SESSION['login']);
 			$sql = 'SELECT * FROM users WHERE id="'.$_POST['id_user'].'"';
-			$req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
-			$data = mysql_fetch_assoc($req);
+			$req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
+			$data = mysqli_fetch_assoc($req);
 			
 			$_SESSION['login'] = $_POST['firstname']." ".$_POST['lastname'];
 			
 			if(trim($data['password']) == trim($_POST['password']))
 			{
 				$sqlIns = "UPDATE `users` SET `firstname`='".$_POST['firstname']."', `lastname`='".$_POST['lastname']."' WHERE `id`='".$_POST['id_user']."';";
-				$reqIns = mysql_query($sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysql_error());
+				$reqIns = mysqli_query($db,$sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysqli_error($db));
 			}
 			else
 			{
 				$encryptedPassword = sha1($_POST['password']);
 				$sqlIns = "UPDATE `users` SET `firstname`='".$_POST['firstname']."', `lastname`='".$_POST['lastname']."', `password`='".$encryptedPassword."' WHERE `id`='".$_POST['id_user']."';";
-				$reqIns = mysql_query($sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysql_error());
+				$reqIns = mysqli_query($db,$sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysqli_error($db));
 			}
 			echo "<p class='alert alert-success alert-anim'>";
             echo "<i class='glyphicon glyphicon-ok'></i>";
@@ -70,14 +70,14 @@ if (isset($_SESSION['authentification']))
     //******************************************************
     //  Affichage page principale
     //******************************************************
-    $db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-    mysql_select_db($database,$db);
+    $db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+    mysqli_select_db($db,$database);
 	
 	// *** Lecture BDD users  ***
 	$UserSelected = explode(" ", $_SESSION['login']);
 	$sql = 'SELECT * FROM users WHERE (firstname="'.$UserSelected[0].'" AND lastname="'.$UserSelected[1].'")';
-	$req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
-	$data = mysql_fetch_assoc($req);
+	$req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
+	$data = mysqli_fetch_assoc($req);
 
 		echo '<form class="form-group" method="post" action="">';
 		echo '<input type="hidden" value="'.$data['id'].'" name="id_user">';

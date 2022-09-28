@@ -23,15 +23,15 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 4)
     //  Affichage page principale
     //******************************************************
     // *** Test des Fichiers suivants ***	
-	$filename1 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.ini";				
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address").$FichierINIOpensim;
-	$filename3 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/FlotsamCache.ini";	
-	$filename4 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."config-include/GridCommon.ini";
-	$filename5 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.log";
-	$filename6 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."OpenSim.32BitLaunch.log";
-	$filename7 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."startuplogo.txt";
-	$filename8 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."startup_commands.txt";
-	$filename9 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."shutdown_commands.txt";
+	$filename1 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."OpenSim.ini";				
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/".$FichierINIOpensim;
+	$filename3 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."config-include/FlotsamCache.ini";	
+	$filename4 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."config-include/GridCommon.ini";
+	$filename5 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."OpenSim.log";
+	$filename6 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."OpenSim.32BitLaunch.log";
+	$filename7 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."startuplogo.txt";
+	$filename8 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."startup_commands.txt";
+	$filename9 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."shutdown_commands.txt";
     //******************************************************
 
     $dispo = "";

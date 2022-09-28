@@ -26,8 +26,8 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 	echo Select_Simulateur($_SESSION['opensim_select']);
 	
 	
-	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-	mysql_select_db($database,$db);
+	$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+	mysqli_select_db($db,$database);
 
 	if (isset($_POST['cmd']))
 	{
@@ -86,8 +86,8 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 			echo '<tr>';
             echo '<td>';
             $sql = 'SELECT * FROM moteurs';
-			$req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
-			while($data = mysql_fetch_assoc($req))
+			$req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
+			while($data = mysqli_fetch_assoc($req))
 			{
                 echo '<div class="checkbox">';
                 echo '<label><input type="checkbox" value="'.$data['osAutorise'].'" name="'.$data['id_os'].'">'.$data['name'].'</label>';
@@ -138,7 +138,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
                     WHERE `firstname` = '".$_POST['oldFirstName']."' 
                     AND `lastname` = '".$_POST['oldLastName']."'
                 ";	
-		        $reqUp = mysql_query($sqlUp) or die('Erreur SQL !<p>'.$sqlUp.'</p>'.mysql_error());
+		        $reqUp = mysqli_query($db,$sqlUp) or die('Erreur SQL !<p>'.$sqlUp.'</p>'.mysqli_error($db));
 
                 echo "<p class='alert alert-success alert-anim'>";
                 echo "<i class='glyphicon glyphicon-ok'></i>";
@@ -157,9 +157,9 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 		if ($_POST['cmd'] == 'Enregistrer')
 		{
 			$sql = 'SELECT * FROM moteurs';
-			$req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
+			$req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
 
-			while($data = mysql_fetch_assoc($req))
+			while($data = mysqli_fetch_assoc($req))
 			{
 			    if ($_POST[$data['id_os']] != '')
 				{
@@ -177,7 +177,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
                     '".$clesprivilege."'
                 )
             ";
-			$reqIns = mysql_query($sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysql_error());
+			$reqIns = mysqli_query($db,$sqlIns) or die('Erreur SQL !<p>'.$sqlIns.'</p>'.mysqli_error($db));
 
 			echo "<p class='alert alert-success alert-anim'>";
             echo "<i class='glyphicon glyphicon-ok'></i>";
@@ -188,9 +188,9 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 		if ($_POST['cmd'] == 'Modifier')
 		{
             $sql = 'SELECT * FROM moteurs';
-            $req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
+            $req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
                 
-            while($data = mysql_fetch_assoc($req))
+            while($data = mysqli_fetch_assoc($req))
             {
                 if ($_POST[$data['id_os']] != '')
                 {
@@ -207,7 +207,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
                 WHERE `firstname` = '".$_POST['oldFirstName']."' 
                 AND `lastname` = '".$_POST['oldLastName']."'
             ";
-            $reqUp = mysql_query($sqlUp) or die('Erreur SQL !<p>'.$sqlUp.'</p>'.mysql_error());
+            $reqUp = mysqli_query($db, $sqlUp) or die('Erreur SQL !<p>'.$sqlUp.'</p>'.mysqli_error($db));
 
             echo "<p class='alert alert-success alert-anim'>";
             echo "<i class='glyphicon glyphicon-ok'></i>";
@@ -223,7 +223,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
             WHERE `firstname` = '".$_POST['oldFirstName']."' 
             AND `lastname` = '".$_POST['oldLastName']."' 
         ";	
-        $reqDel = mysql_query($sqlDel) or die('Erreur SQL !<p>'.$sqlDel.'</p>'.mysql_error());
+        $reqDel = mysqli_query($db,$sqlDel) or die('Erreur SQL !<p>'.$sqlDel.'</p>'.mysqli_error($db));
 
         echo "<p class='alert alert-success alert-anim'>";
         echo "<i class='glyphicon glyphicon-ok'></i>";
@@ -245,9 +245,9 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 
         $sql = 'SELECT * FROM users ORDER BY id ASC';
         // $sql = 'SELECT * FROM users';
-        $req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
+        $req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
 
-        while ($data = mysql_fetch_assoc($req)) {$n++;}
+        while ($data = mysqli_fetch_assoc($req)) {$n++;}
 
         echo '<p>'.$osmw_label_total_user.' <span class="badge">'.$n.'</span></p>';
 
@@ -264,10 +264,10 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
         echo '</tr>';
 
         $sql = 'SELECT * FROM users ORDER BY id ASC';
-        $req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
+        $req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
         $n = 0;
 
-        while ($data = mysql_fetch_assoc($req))
+        while ($data = mysqli_fetch_assoc($req))
         {
             $n++;
             $privilegetxt1 = $privilegetxt2 = $privilegetxt3 = 0;
@@ -309,9 +309,9 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
                 echo '<td>';
                 
                 $sql1 = 'SELECT * FROM moteurs';
-                $req1 = mysql_query($sql1) or die('Erreur SQL !<p>'.$sql1.'</p>'.mysql_error());
+                $req1 = mysqli_query($db,$sql1) or die('Erreur SQL !<p>'.$sql1.'</p>'.mysqli_error($db));
 
-                while($data1 = mysql_fetch_assoc($req1))
+                while($data1 = mysqli_fetch_assoc($req1))
                 {
                     $moteursOK = "";
                     $osAutorise = explode("|", $data['osAutorise']);
@@ -381,7 +381,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
     }
 
     echo '</table>';
-	mysql_close();
+	mysqli_close($db);
 }
 else {header('Location: index.php');}
 ?>

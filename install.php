@@ -98,14 +98,15 @@ if (isset($_POST['etape']) AND $_POST['etape'] == 1)
     $base   = trim($_POST['base']);
 	$domaine   = trim($_POST['domaine']);
 
+    $conn = mysqli_connect($hote, $login, $pass);
     // on vérifie la connectivité avec le serveur avant d'aller plus loin
-    if (!mysql_connect($hote, $login, $pass))
+    if (!$conn)
     {
         exit('<div class="alert alert-danger">Bad connection settings, installation corrupt ...</div>'. RETOUR);
     }
 
     // on vérifie la connectivité avec la base avant d'aller plus loin
-    if (!mysql_select_db($base))
+    if (!mysqli_select_db($conn,$base))
     {
         exit('<div class="alert alert-danger">Wrong database name, installation corrupt ...</div>'. RETOUR);
     }

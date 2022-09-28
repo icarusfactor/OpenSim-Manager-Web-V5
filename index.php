@@ -99,13 +99,13 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['pas
 	$passwordHash = sha1($_POST['pass']);
 
 	// on se connecte a MySQL
-	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-	mysql_select_db($database,$db);
+	$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+	mysqli_select_db($db,$database);
 
 	$sql = 'SELECT * FROM users';
-	$req = mysql_query($sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysql_error());
+	$req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
 
-	while($data = mysql_fetch_assoc($req))
+	while($data = mysqli_fetch_assoc($req))
 	{
 		if ($data['firstname'] == $_POST['firstname'] 
         and $data['lastname'] == $_POST['lastname'] 
@@ -130,18 +130,18 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['pas
     {
         // echo '<p>Bienvenue sur la page administration du site.</p>';
 		// on se connecte a MySQL
-		$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-		mysql_select_db($database,$db);
+		$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+		mysqli_select_db($db,$database);
 		$sql = 'SELECT * FROM moteurs';
-		$req = mysql_query($sql) or die('Erreur SQL!<p>'.$sql.'</p>'.mysql_error());
-		while($data = mysql_fetch_assoc($req))
+		$req = mysqli_query($db,$sql) or die('Erreur SQL!<p>'.$sql.'</p>'.mysqli_error($db));
+		while($data = mysqli_fetch_assoc($req))
         {
             $_SESSION['opensim_select'] = $data['id_os'];
             break;
         }
 		
     }
-	mysql_close();
+	mysqli_close($db );
 }
 
 
@@ -412,7 +412,7 @@ else
 </div>
 
 <footer class="footer">
-    <p class="text-center">Open Simulator Manager Web <?php echo date(Y); ?> - <?php echo INI_Conf(VersionOSMW, VersionOSMW); ?> </p>
+    <p class="text-center">Open Simulator Manager Web <?php echo date("Y"); ?> - <?php echo INI_Conf("VersionOSMW", "VersionOSMW"); ?> </p>
 </footer>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>

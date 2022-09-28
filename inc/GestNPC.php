@@ -3,12 +3,12 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 {
 //	echo Affichage_Entete($_SESSION['opensim_select']);
 
-	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-    mysql_select_db($database,$db);	
+	$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+    mysqli_select_db($db,$database);	
 	
 	$sqlA = "SELECT * FROM `gestionnaire` WHERE uuid='".$_SESSION['uuid_region_npc']."'" ;
-	$reqA = mysql_query($sqlA) or die('Erreur SQL !<br>'.$sqlA.'<br>'.mysql_error());
-	$dataA = mysql_fetch_assoc($reqA);
+	$reqA = mysqli_query($db,$sqlA) or die('Erreur SQL !<br>'.$sqlA.'<br>'.mysqli_error($db));
+	$dataA = mysqli_fetch_assoc($reqA);
 	$regionName = $dataA['region'];
 	$regionUUID = $_SESSION['uuid_region_npc'];
 	$FILE_NPC = $regionName.".txt";	
@@ -41,13 +41,13 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 	if ($_POST["STOP_NPC"])	{
 		EcritureFichier($FILE_NPC,"Gestion_NPC,STOP_ALL,section2,section3,section4,".$_POST["regionUUID"]);
 		$sql ="DELETE FROM `npc` WHERE region='".$_POST["regionName"]."'";
-		$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+		$req = mysqli_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error($db));
 		}
 //*******************************************************************************
 	if ($_POST["REMOVE_NPC"])	{
 		EcritureFichier($FILE_NPC,"Gestion_NPC,REMOVE_NPC,".$_POST["select_npc"].",section3,section4,".$_POST["regionUUID"]);
 		$sql ="DELETE FROM `npc` WHERE uuid_npc='".$_POST["select_npc"]."'";
-		$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+		$req = mysqli_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error($db));
 		}		
 //*******************************************************************************
 	if ($_POST["SAY"])	{
@@ -69,11 +69,11 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 //*******************************************************************************
 	if ($_POST["RAZ_LISTE_OBJ"]){
 		$sql0 = "DELETE FROM `npc` WHERE region='".$_POST["regionName"]."'" ;
-		$req0 = mysql_query($sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysql_error());
+		$req0 = mysqli_query($db,$sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysqli_error($db));
 		$sql0 = "DELETE FROM `inventaire` WHERE region='".$_POST["regionName"]."'" ;
-		$req0 = mysql_query($sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysql_error());
+		$req0 = mysqli_query($db,$sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysqli_error($db));
 		$sql0 = "DELETE FROM `gestionnaire` WHERE region='".$_POST["regionName"]."'" ;
-		$req0 = mysql_query($sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysql_error());		
+		$req0 = mysqli_query($db,$sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysqli_error($db));		
 		}
 //*******************************************************************************
 }
@@ -85,8 +85,8 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 	if (isset($_POST["region"])){$_SESSION['uuid_region_npc'] = trim($_POST["region"]);}
 	
 	$sql0 = "SELECT * FROM `gestionnaire`" ;
-	$req0 = mysql_query($sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysql_error());
-	$numrow0 = mysql_num_rows($req0);
+	$req0 = mysqli_query($db, $sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysqli_error($db));
+	$numrow0 = mysqli_num_rows($db,$req0);
 
 	echo '<p>Nombre total de regions Inworld avec Box NPC: <span class="badge">'.$numrow0.'</span>';
 	
@@ -97,7 +97,7 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 			echo '<div class="form-inline">';
 			echo '<label for="region"></label>Choisir la région de la Box NPC a commander: ';
 			echo '<select class="form-control" name="region">';
-			while($data = mysql_fetch_assoc($req0))
+			while($data = mysqli_fetch_assoc($req0))
 			{
 				echo '<option value="'.$data["uuid"].'">'.$data["region"].'</option> ';
 			}
@@ -161,9 +161,9 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 			echo '<label for="select_npc"></label>Avatar NPC: ';
 			echo '<select class="form-control" name="select_npc">';
 			$sql0 = "SELECT * FROM `npc` WHERE region='".$regionName."'" ;
-			$req0 = mysql_query($sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysql_error());
-			$numrow0 = mysql_num_rows($req0);
-			while ($data0 = mysql_fetch_assoc($req0)) 
+			$req0 = mysqli_query($db,$sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysqli_error($db));
+			$numrow0 = mysqli_num_rows($req0);
+			while ($data0 = mysqli_fetch_assoc($req0)) 
 			{
 				echo '<option value="'.$data0["uuid_npc"].'">'.$data0["firstname"].' '.$data0["lastname"].'</option> ';
 			}
@@ -182,9 +182,9 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 			echo '<label for="select_apparence"></label>Apparence: <br>';
 			echo '<select class="form-control" name="select_apparence">';
 			$sql0 = "SELECT * FROM `inventaire` WHERE (type='apparence' AND uuid_parent='".$regionUUID."')" ;
-			$req0 = mysql_query($sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysql_error());
-			$numrow0 = mysql_num_rows($req0);
-			while ($data0 = mysql_fetch_assoc($req0)) 
+			$req0 = mysqli_query($db,$sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysqli_error($db));
+			$numrow0 = mysqli_num_rows($req0);
+			while ($data0 = mysqli_fetch_assoc($req0)) 
 			{
 				echo '<option value="'.$data0["nom"].'">'.$data0["nom"].'</option> ';
 			}
@@ -232,9 +232,9 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 3)
 			echo '<label for="select_npc"></label>Animer l\'Avatar NPC: <br>';
 			echo '<select class="form-control" name="select_animation">';
 			$sql0 = "SELECT * FROM `inventaire` WHERE (type='animation' AND uuid_parent='".$regionUUID."')" ;
-			$req0 = mysql_query($sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysql_error());
-			$numrow0 = mysql_num_rows($req0);
-			while ($data0 = mysql_fetch_assoc($req0)) 
+			$req0 = mysqli_query($db,$sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysqli_error($db));
+			$numrow0 = mysqli_num_rows($req0);
+			while ($data0 = mysqli_fetch_assoc($req0)) 
 			{
 				echo '<option value="'.$data0["nom"].'">'.$data0["nom"].'</option> ';
 			}
@@ -327,7 +327,7 @@ echo '</div>';
 
 
 
-mysql_close($db);
+mysqli_close($db);
 
 }
 else {header('Location: index.php');}

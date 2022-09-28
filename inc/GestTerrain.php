@@ -24,8 +24,8 @@ if (isset($_SESSION['authentification']))
     //******************************************************
 	if (isset($_POST['cmd']))
 	{
-		$RemotePort = RecupRAdminParam_Opensim(INI_Conf_Moteur($_SESSION['opensim_select'], "address").$FichierINIOpensim, " port = ");
-		$access_password2 = RecupRAdminParam_Opensim(INI_Conf_Moteur($_SESSION['opensim_select'], "address").$FichierINIOpensim, " access_password = ");
+		$RemotePort = RecupRAdminParam_Opensim(INI_Conf_Moteur($_SESSION['opensim_select'], "address")."/bin/".$FichierINIOpensim, " port = ");
+		$access_password2 = RecupRAdminParam_Opensim(INI_Conf_Moteur($_SESSION['opensim_select'], "address")."/bin/".$FichierINIOpensim, " access_password = ");
 		
         $myRemoteAdmin = new RemoteAdmin(trim($hostnameSSH), trim($RemotePort), trim($access_password2));
 
@@ -67,20 +67,20 @@ if (isset($_SESSION['authentification']))
 	echo Select_Simulateur($_SESSION['opensim_select']);
 
 	// *** Lecture Fichier Region.ini ***
-	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."Regions/".$FichierINIRegions;
+	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."/bin/"."Regions/".$FichierINIRegions;
 	if (file_exists($filename2)) {$filename = $filename2 ;}
 
 	$tableauIni = parse_ini_file($filename, true);
 	if ($tableauIni == FALSE) {echo '<p>Error: Reading ini file '.$filename.'</p>';}
 	
     // *** Lecture Fichier Regions.ini ***
- 	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."Regions/".$FichierINIRegions;	 
+ 	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."/bin/"."Regions/".$FichierINIRegions;	 
 	if (file_exists($filename2)) {$filename = $filename2;}
 	$tableauIni = parse_ini_file($filename, true);
 	if ($tableauIni == FALSE) {echo '<p>Error: Reading ini file '.$filename.'</p>';}
 	
 	// *** Recuperation du port Http du Simulateur
-	$srvOS  = RecupPortHTTP_Opensim(INI_Conf_Moteur($_SESSION['opensim_select'], "address").$FichierINIOpensim, "http_listener_port");
+	$srvOS  = RecupPortHTTP_Opensim(INI_Conf_Moteur($_SESSION['opensim_select'], "address")."/bin/".$FichierINIOpensim, "http_listener_port");
 
 	echo '<p>Nombre total de regions <span class="badge">'.count($tableauIni).'</span></p>';
     
@@ -98,7 +98,7 @@ if (isset($_SESSION['authentification']))
 	echo '<th>Format RAW</th>';
     echo '</tr>';
 
-	while (list($key, $val) = each($tableauIni))
+	foreach($tableauIni as $key => $val )
 	{
         $uuid = str_replace("-", "", $tableauIni[$key]['RegionUUID']);
 		$ImgMap = "http://".$hostnameSSH.":".trim($srvOS)."/index.php?method=regionImage".$uuid;

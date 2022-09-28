@@ -2,8 +2,8 @@
  <?php
 include 'config.php';
 
-	$db = mysql_connect($hostnameBDD, $userBDD, $passBDD);
-    mysql_select_db($database,$db);	
+	$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+    mysqli_select_db($db,$database);	
 
 if($_POST["parameter"] )
 {
@@ -14,7 +14,7 @@ if($_POST["parameter"] )
 	if ($_POST["parameter"] == "REG_WEB_NPC" )
 	{ 
 		$sql ="INSERT INTO `gestionnaire` (`uuid`, `region`) VALUES ('".$_POST["uuid"]."', '".$_POST["region"]."');";
-		$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+		$req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error($db));
 		
 		$FILE_NPC_TIMER = $_POST["region"].".txt";
 		$f = fopen($FILE_NPC_TIMER, "x+");
@@ -28,7 +28,7 @@ if($_POST["parameter"] )
 	if ($_POST["parameter"] == "NPC_CREATE" )
 	{ 
 		$sql ="INSERT INTO `npc` (`uuid_npc`,`firstname`,`lastname`,`region`) VALUES ('".$_POST["uuid"]."','".$_POST["firstname"]."','".$_POST["lastname"]."','".$_POST["region"]."');";
-		$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+		$req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error($db));
 		echo 'Votre NPC est Enregistré et opérationnel, Bonne Utilisation !!!';
 	}
 //#####################################################################################
@@ -38,10 +38,10 @@ if($_POST["parameter"] )
 		{
 
 			$sql0 = "SELECT * FROM `npc` WHERE region='".$_POST["region"]."'" ;
-			$req0 = mysql_query($sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysql_error());
-			$numrow0 = mysql_num_rows($req0);
+			$req0 = mysqli_query($db,$sql0) or die('Erreur SQL !<br>'.$sql0.'<br>'.mysqli_error($db));
+			$numrow0 = mysqli_num_rows($req0);
 			$listeNPC ="";
-			while ($data0 = mysql_fetch_assoc($req0)) 
+			while ($data0 = mysqli_fetch_assoc($req0)) 
 			{
 				$listeNPC = $listeNPC.$data0["uuid_npc"]." -> ".$data0["firstname"]." ".$data0["lastname"].";";  
 			}
@@ -54,7 +54,7 @@ if($_POST["parameter"] )
 		{
 			// supprimer liste de l'objet appelant
 			$sql ="DELETE FROM `inventaire` WHERE `uuid_parent` = '".$_POST["uuid"]."';";
-			$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+			$req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error($db));
 
 			// ajouter la liste dans la bdd
 			$listinventaire = explode(";", $_POST["datas"]);
@@ -67,7 +67,7 @@ if($_POST["parameter"] )
 					for ($j = 1; $j <= $nb_apparence; $j++) 
 					{
 						$sql ="INSERT INTO `inventaire` (`uuid_parent`, `type`, `nom`, `region`) VALUES ('".$_POST["uuid"]."', 'apparence', '".$listinventaire[$i+$j+1]."','".$_POST["region"]."');";
-						$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+						$req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error($db));
 					}
 				}
 				if($listinventaire[$i] == "animation")
@@ -76,7 +76,7 @@ if($_POST["parameter"] )
 					for ($j = 1; $j <= $nb_animation; $j++) 
 					{
 						$sql ="INSERT INTO `inventaire` (`uuid_parent`, `type`, `nom`, `region`) VALUES ('".$_POST["uuid"]."', 'animation', '".$listinventaire[$i+$j+1]."','".$_POST["region"]."');";
-						$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error());
+						$req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error($db));
 					}
 				}
 			}
@@ -104,7 +104,7 @@ if($_POST["parameter"] )
 	}
 //*******************************************************************************
 }
-mysql_close($db);
+mysqli_close($db);
 
 
 ?> 
