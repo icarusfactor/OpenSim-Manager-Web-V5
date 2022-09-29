@@ -88,7 +88,7 @@ if (isset($_POST['etape']) AND $_POST['etape'] == 1)
     if (file_exists($fichier) AND filesize($fichier ) > 0)
     {
         // si le fichier existe et qu'il n'est pas vide alors
-        exit('<div class="alert alert-danger">Not this configuration file, installation corrupt ...</div>'. );
+        exit('<div class="alert alert-danger">Not this configuration file, installation corrupt ...</div>' );
     }
 
     // on crée nos variables, et au passage on retire les éventuels espaces	
