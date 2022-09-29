@@ -209,7 +209,7 @@ if (isset($_SESSION['authentification']))
 ?>
 
 <?php
-    if (isset($_GET['a'))
+    if (isset($_GET['a']))
     {
         $a = $_GET['a'];
 																						/* index.php v5.5 */
