@@ -3,12 +3,14 @@ $fichier = './inc/config.php';
 if (file_exists($fichier) AND filesize($fichier ) > 0)
 {
 
+$return = '<input class="btn btn-primary" type="button" value="Return of form" onclick="history.back()">';
+
 require_once ('inc/config.php');
 require_once ('inc/fonctions.php');
 require_once ('inc/radmin.php');
 if ($themes) {require_once ('./inc/themes.php');}
 
-if ($_GET['a'] == 'logout')
+if (isset($_GET['a']) && $_GET['a'] == 'logout')
 {
     $_SESSION = array();
     session_destroy();
@@ -29,7 +31,7 @@ session_start();
     <link rel="icon" href="img/favicon.ico">
     <title>OpenSimulator Manager Web</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" media="all" type="text/css" id="css" href="<?php echo $url; ?>" />
+    <link rel="stylesheet" media="all" type="text/css" id="css" href="<?php if(isset($url) && $url != ''){ echo $url; } ?>" />
     <link rel="stylesheet" href="css/btn3d.css" type="text/css" />
     <link rel="stylesheet" href="css/login.css" type="text/css" />
     <link rel="stylesheet" href="css/custom.css" type="text/css" />
@@ -156,25 +158,25 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['pas
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
-        <li><a href="index.php?style=default"><i class="glyphicon glyphicon-leaf"></i> default</a></i>
-        <li><a href="index.php?style=amelia"><i class="glyphicon glyphicon-leaf"></i> amelia</a></i>
-        <li><a href="index.php?style=cerulean"><i class="glyphicon glyphicon-leaf"></i> cerulean</a></i>
-        <li><a href="index.php?style=cosmo"><i class="glyphicon glyphicon-leaf"></i> cosmo</a></i>
-        <li><a href="index.php?style=cyborg"><i class="glyphicon glyphicon-leaf"></i> cyborg</a></i>
-        <li><a href="index.php?style=darkly"><i class="glyphicon glyphicon-leaf"></i> darkly</a></i>
-        <li><a href="index.php?style=flatly"><i class="glyphicon glyphicon-leaf"></i> flatly</a></i>
-        <li><a href="index.php?style=freelancer"><i class="glyphicon glyphicon-leaf"></i> freelancer</a></i>
-        <li><a href="index.php?style=journal"><i class="glyphicon glyphicon-leaf"></i> journal</a></i>
-        <li><a href="index.php?style=lumen"><i class="glyphicon glyphicon-leaf"></i> lumen</a></i>
-        <li><a href="index.php?style=paper"><i class="glyphicon glyphicon-leaf"></i> paper</a></i>
-        <li><a href="index.php?style=readable"><i class="glyphicon glyphicon-leaf"></i> readable</a></i>		
-        <li><a href="index.php?style=sandstone"><i class="glyphicon glyphicon-leaf"></i> sandstone</a></i>
-        <li><a href="index.php?style=simplex"><i class="glyphicon glyphicon-leaf"></i> simplex</a></i>
-        <li><a href="index.php?style=slate"><i class="glyphicon glyphicon-leaf"></i> slate</a></i>
-        <li><a href="index.php?style=spacelab"><i class="glyphicon glyphicon-leaf"></i> spacelab</a></i>
-        <li><a href="index.php?style=superhero"><i class="glyphicon glyphicon-leaf"></i> superhero</a></i>
-        <li><a href="index.php?style=united"><i class="glyphicon glyphicon-leaf"></i> united</a></i>
-        <li><a href="index.php?style=yety"><i class="glyphicon glyphicon-leaf"></i> yety</a></i>
+        <li><a href="index.php?style=default"><i class="glyphicon glyphicon-leaf"></i> default</a></li>
+        <li><a href="index.php?style=amelia"><i class="glyphicon glyphicon-leaf"></i> amelia</a></li>
+        <li><a href="index.php?style=cerulean"><i class="glyphicon glyphicon-leaf"></i> cerulean</a></li>
+        <li><a href="index.php?style=cosmo"><i class="glyphicon glyphicon-leaf"></i> cosmo</a></li>
+        <li><a href="index.php?style=cyborg"><i class="glyphicon glyphicon-leaf"></i> cyborg</a></li>
+        <li><a href="index.php?style=darkly"><i class="glyphicon glyphicon-leaf"></i> darkly</a></li>
+        <li><a href="index.php?style=flatly"><i class="glyphicon glyphicon-leaf"></i> flatly</a></li>
+        <li><a href="index.php?style=freelancer"><i class="glyphicon glyphicon-leaf"></i> freelancer</a></li>
+        <li><a href="index.php?style=journal"><i class="glyphicon glyphicon-leaf"></i> journal</a></li>
+        <li><a href="index.php?style=lumen"><i class="glyphicon glyphicon-leaf"></i> lumen</a></li>
+        <li><a href="index.php?style=paper"><i class="glyphicon glyphicon-leaf"></i> paper</a></li>
+        <li><a href="index.php?style=readable"><i class="glyphicon glyphicon-leaf"></i> readable</a></li>		
+        <li><a href="index.php?style=sandstone"><i class="glyphicon glyphicon-leaf"></i> sandstone</a></li>
+        <li><a href="index.php?style=simplex"><i class="glyphicon glyphicon-leaf"></i> simplex</a></li>
+        <li><a href="index.php?style=slate"><i class="glyphicon glyphicon-leaf"></i> slate</a></li>
+        <li><a href="index.php?style=spacelab"><i class="glyphicon glyphicon-leaf"></i> spacelab</a></li>
+        <li><a href="index.php?style=superhero"><i class="glyphicon glyphicon-leaf"></i> superhero</a></li>
+        <li><a href="index.php?style=united"><i class="glyphicon glyphicon-leaf"></i> united</a></li>
+        <li><a href="index.php?style=yety"><i class="glyphicon glyphicon-leaf"></i> yety</a></li>
     </ul>
 </div>
 <?php endif; ?>
@@ -207,7 +209,7 @@ if (isset($_SESSION['authentification']))
 ?>
 
 <?php
-    if ($_GET['a'])
+    if (isset($_GET['a'))
     {
         $a = $_GET['a'];
 																						/* index.php v5.5 */
@@ -463,7 +465,7 @@ else
     <link rel="icon" href="img/favicon.ico">
     <title>OpenSimulator Manager Web</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" media="all" type="text/css" id="css" href="<?php echo $url; ?>" />
+    <link rel="stylesheet" media="all" type="text/css" id="css" href="<?php if(isset($url) && $url != ''){ echo $url;} ?>" />
     <link rel="stylesheet" href="css/btn3d.css" type="text/css" />
     <link rel="stylesheet" href="css/login.css" type="text/css" />
     <link rel="stylesheet" href="css/custom.css" type="text/css" />
@@ -488,7 +490,7 @@ else
 <?php
 // ********************************************************************************************************************************************
 // si le fichier n'existe  pas 
-        exit('<div class="alert alert-danger">!!! configuration file not exist, <a href="install.php"> Installation </a> !!! </div>'. RETOUR);
+        exit('<div class="alert alert-danger">!!! configuration file not exist, <a href="install.php"> Installation </a> !!! </div>'. $return);
 echo '</body>
 </html>';		
 }

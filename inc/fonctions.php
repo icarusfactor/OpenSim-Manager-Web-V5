@@ -651,5 +651,5 @@
     function IsEmail($email)
     {
         $pattern = "^([a-z0-9_]|\\-|\\.)+@(([a-z0-9_]|\\-)+\\.)+[a-z]{2,7}$";
-        return (eregi($pattern,$email)) ? true : false;
+        return (preg_match($pattern,$email)) ? true : false;
     }
