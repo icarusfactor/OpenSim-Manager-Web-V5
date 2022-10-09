@@ -50,6 +50,7 @@ if (isset($_SESSION['authentification']))
 	
     if (file_exists(INI_Conf_Moteur($_SESSION['opensim_select'], "address").'/bin/'.'OpenSim.log'))
     {
+
         echo '<div class="alert alert-success alert-anim" role="alert">';
         echo "File exist: <strong>" .$fichierLog.'</strong>';
         echo '</div>';
@@ -90,8 +91,8 @@ if (isset($_SESSION['authentification']))
 
 	if (!$aff)
     {
-        if (!$logfile) $aff = "File not exist...";
-        else $aff = "File Log ".$logfile." is empty ...";
+        if (!$fichierLog) $aff = "File not exist...";
+        else $aff = "File Log ".$fichierLog." is empty ...";
     }
     echo '<pre>'.$aff.'</pre>';
 

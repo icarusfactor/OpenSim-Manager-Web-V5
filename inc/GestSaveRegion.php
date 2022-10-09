@@ -1,6 +1,24 @@
 <?php 
+
+
+
+
 if (isset($_SESSION['authentification']))
 {
+
+
+function GetImageFromUrl($link)
+    {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_POST, 0);
+    curl_setopt($ch,CURLOPT_URL,$link);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $result=curl_exec($ch);
+    curl_close($ch);
+    return $result;
+    }
+
+
 	echo Affichage_Entete($_SESSION['opensim_select']);
 	$moteursOK = Securite_Simulateur();
     /* ************************************ */
@@ -37,7 +55,7 @@ if (isset($_SESSION['authentification']))
         {
             $parameters = array(
                 'region_name' => $_POST['name_sim'], 
-                'filename' => 'BackupOAR_'.$_POST['name_sim'].'_'.date('d_m_Y_H_i').'.oar'
+                'filename' => $baseSave.$baseBackups.$slash.'BackupOAR_'.$_POST['name_sim'].'_'.date('d_m_Y_H_i').'.oar'
             );
             $myRemoteAdmin->SendCommand('admin_save_oar', $parameters);
         }
@@ -91,11 +109,23 @@ if (isset($_SESSION['authentification']))
         $uuid = str_replace("-", "", $tableauIni[$key]['RegionUUID']);
 		$ImgMap = "http://".$hostnameSSH.":".trim($srvOS)."/index.php?method=regionImage".$uuid;
 
-        if (Test_Url($ImgMap) == false) {$ImgMap = "img/offline.jpg";}
+
+        //if (Test_Url($ImgMap) == false) {$ImgMapSave = "img/offline.jpg";}
+                #$ImgMapSave = $baseImages.$slash."regionImage".$uuid.".bmp"; 
+                $ImgMapSave = $baseImages.$slash; 
+                
+
+
+        $sourcecode = GetImageFromUrl($ImgMap);
+
+        $savefile = fopen( $ImgMapSave , 'w+');
+        fwrite($savefile, $sourcecode);
+        fclose($savefile);
+
 
         echo '<tr>';
         echo '<td><h5>'.$key.'</h5></td>';
-		echo '<td><img  style="height: 45px;" class="img-thumbnail" alt="" src="'.$ImgMap.'"></td>';
+		echo '<td><img  style="height: 45px;" class="img-thumbnail" alt="" src="'.$ImgMapSave.'"></td>';
        // echo '<td><h5><span class="badge">'.$tableauIni[$key]['RegionUUID'].'</span></h5></td>';
         echo '<td><h5><span class="badge">'.$tableauIni[$key]['Location'].'</span></h5></td>';
         echo '<td><h5>'.$tableauIni[$key]['ExternalHostName'].'</h5></td>';

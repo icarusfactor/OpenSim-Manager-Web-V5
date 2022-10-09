@@ -40,7 +40,7 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'/osmw/','contact@mail.com',1,5,'Version 5.5','/osmw/');
+INSERT INTO `config` VALUES (1,'/osmw/','contact@mail.com',1,5,'Version 5.7','/osmw/');
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 

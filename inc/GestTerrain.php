@@ -40,7 +40,7 @@ if (isset($_SESSION['authentification']))
 			{
 				$parameters = array(
                 'region_name' => $_POST['name_sim'], 
-                'filename' => 'BackupMAP_'.$_POST['name_sim'].'_'.date('d_m_Y_h').'.bmp'
+                'filename' => $baseSave.$baseBackups.$slash.'BackupMAP_'.$_POST['name_sim'].'_'.date('d_m_Y_h').'.bmp'
 				);
 				$myRemoteAdmin->SendCommand('admin_save_heightmap', $parameters);
 			}
@@ -48,7 +48,7 @@ if (isset($_SESSION['authentification']))
 			{
 				$parameters = array(
                 'region_name' => $_POST['name_sim'], 
-                'filename' => 'BackupMAP_'.$_POST['name_sim'].'_'.date('d_m_Y_h').'.raw'
+                'filename' => $baseSave.$baseBackups.$slash.'BackupMAP_'.$_POST['name_sim'].'_'.date('d_m_Y_h').'.raw'
 				);
 				$myRemoteAdmin->SendCommand('admin_save_heightmap', $parameters);
 			}	

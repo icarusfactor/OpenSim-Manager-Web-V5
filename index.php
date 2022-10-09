@@ -212,7 +212,7 @@ if (isset($_SESSION['authentification']))
     if (isset($_GET['a']))
     {
         $a = $_GET['a'];
-																						/* index.php v5.5 */
+																						/* index.php v5.7 */
         if ($a == "1") {include('inc/GestSims.php');}           // # Gestion sim 									v5.5 OK
         if ($a == "2") {include('inc/GestSaveRegion.php');}     // # Gestion backup sim 							v5.5 OK
         if ($a == "3") {include('inc/GestTerrain.php');}        // # Gestion Terrain 								v5.5 OK
@@ -235,6 +235,7 @@ if (isset($_SESSION['authentification']))
         if ($a == "20") {include('inc/GestNPC.php');}			// # Gestion de NPC InWorld							v6.0 OK
         if ($a == "21") {include('inc/GestHypergrid.php');}     // # Gestion des liens Hypergrid					v5.5 OK	
         if ($a == "22") {include('inc/GestMap.php');}           // # Map											v5.5 OK	
+        if ($a == "23") {include('inc/GetConsole.php');}           //  #Console View and Send										v5.7 OK	
 
         if ($a == "logout")
         {
@@ -321,6 +322,7 @@ if (isset($_SESSION['authentification']))
 		    echo '<p><a class="btn btn-default btn-block" href="?a=5">'.$osmw_index_5.'</a></p>';
 
 			echo '<p><a class="btn btn-default btn-block" href="?a=20">'.$osmw_index_20.'</a></p>';
+			echo '<p><a class="btn btn-default btn-block" href="?a=23">'.$osmw_index_23.'</a></p>';
 		
 		}
 		elseif ($_SESSION['privilege'] >= 3)
@@ -414,10 +416,11 @@ else
 </div>
 
 <footer class="footer">
-    <p class="text-center">Open Simulator Manager Web <?php echo date("Y"); ?> - <?php echo INI_Conf("VersionOSMW", "VersionOSMW"); ?> </p>
+   <p class="text-center">Open Simulator Manager Web <?php echo date("Y"); ?> - <?php echo INI_Conf("VersionOSMW", "VersionOSMW"); ?> </p>
 </footer>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/pdf.js"></script>
 

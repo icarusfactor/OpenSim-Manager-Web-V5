@@ -47,8 +47,10 @@ class RemoteAdmin
         $paramsNames = array_keys($params);
         $paramsValues = array_values($params);
 
+        #<value><string>' . htmlspecialchars($this->password) . '</string></value>
         // Building the XML data to pass to RemoteAdmin through XML-RPC ;)
-        $xml = '<methodCall>
+        $xml = '<?xml version="1.0"?>
+            <methodCall>
             <methodName>' . htmlspecialchars($command) . '</methodName>
                 <params>
                 <param>
@@ -56,7 +58,7 @@ class RemoteAdmin
                 <struct>
                 <member>
                 <name>password</name>
-                <value><string>' . htmlspecialchars($this->password) . '</string></value>
+                <value><string>E6nb42ET</string></value>
             </member>';
         if (count($params) != 0)
         {
@@ -69,38 +71,34 @@ class RemoteAdmin
 
 		$xml .= '</struct></value></param></params></methodCall>';
 
-		//
-        // echo $xml;
-        //
-
-		// Now building headers and sending the data ;)
-        $host = $this->simulatorURL;
+        
+        $host = $this->simulatorURL;  
         $port = $this->simulatorPort;
-        $timeout = 5; // Timeout in seconds
+        $timeout = 5; 
 
-		error_reporting(0);
+    $ch = curl_init( "http://127.0.0.1:9000" );
 
-		$fp = fsockopen($host, $port, $errno, $errstr, $timeout);
-        
-         // If contacting host timeouts or impossible to create the socket, the method returns FALSE
-		if (!$fp) {return FALSE;}
-        
-		else
-        {
-            fputs($fp, "POST / HTTP/1.1\r\n");
-            fputs($fp, "Host: $host\r\n");
-            fputs($fp, "Content-type: text/xml\r\n");
-            fputs($fp, "Content-length: ". strlen($xml) ."\r\n");
-            fputs($fp, "Connection: close\r\n\r\n");
-            fputs($fp, $xml);
-            $res = "";
-            
-			while(!feof($fp))
-			{
-                $res .= fgets($fp, 128);
-            }
-            
-			fclose($fp);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_ENCODING ,"ISO-8859-1");
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
+    curl_setopt($ch, CURLOPT_USERAGENT,'OSMW 5.7');
+    #curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    $response = curl_exec($ch); 
+    $curl_errorno = curl_errno( $ch );
+    $curl_error   = curl_error( $ch );
+    curl_close($ch); 
+
+    // check for curl errors
+    if ( $curl_errorno != 0 ) {
+      die( "Curl ERROR: {$curl_errorno} - {$curl_error}n" );
+    }
+
+
             $response = substr($res, strpos($res, "\r\n\r\n"));;
             
 			// Now parsing the XML response from RemoteAdmin ;)
@@ -114,7 +112,6 @@ class RemoteAdmin
                 }
             }
             return $result;
-        }
     }
 }
 ?>

@@ -33,6 +33,7 @@ $osmw_index_19 = "";
 $osmw_index_20 = "NPC management InWorld (beta)";
 $osmw_index_21 = "Links Hypergrid";
 $osmw_index_22 = "Map";
+$osmw_index_23 = "Console Log";
 
 $osmw_menu_top_1 = "Sims";
 $osmw_menu_top_2 = "Save";
@@ -56,6 +57,7 @@ $osmw_menu_top_8 = "Logout";
 $osmw_simu = "Simulators";
 $osmw_menu_choix = "Choose an option below:";
 $osmw_label_msg_send = "Message to all connected regions";
+$osmw_label_cmd_send = "Send to Console";
 $osmw_label_consult_log = "Creation current file, visit Log";
 $osmw_label_msg_inventaire1 = "Request successfully effected";
 $osmw_label_msg_inventaire2 = "Please see the log. Treatment can be long depending on your inventory";
@@ -86,7 +88,7 @@ $osmw_file_change = "Changing the file";
 //*******************************************************
 // buttons
 //*******************************************************
-$osmw_btn_msg_send = "Send Message";
+$osmw_btn_msg_send = "Send Command";
 $osmw_btn_recuperer = "Recover";
 $osmw_btn_map_zoom = "Apply Zoom";
 $osmw_btn_ajout_user = "Add";
