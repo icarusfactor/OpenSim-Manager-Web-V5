@@ -1,157 +1,157 @@
 <?php
 
-        function debug($variable)
-        {
-                echo '<pre>' . print_r($variable, true) . '</pre>';
-        }
+	function debug($variable)
+	{
+		echo '<pre>' . print_r($variable, true) . '</pre>';
+	}
 
-        function str_random($length)
-        {
-                $alphabet = "0123456789azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN";
-                return substr(str_shuffle(str_repeat($alphabet, $length)), 0, $length);
-        }
+	function str_random($length)
+	{
+		$alphabet = "0123456789azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN";
+		return substr(str_shuffle(str_repeat($alphabet, $length)), 0, $length);
+	}
+	
+	/* ************************************ */
+	/* FONCTION choix du simulateur */
+	/* ************************************ */
+	function Select_Simulateur($simu)
+	{	
+		if ($translator && isset($_SESSION['authentification']))
+		{
+			require_once ('./inc/translator.php');
+			echo('<div class="pull-right">');
+			include_once("./inc/flags.php");
+			echo('</div>');
+		}
+		require 'inc/config.php';
+		
+		// Formulaire de choix du moteur a selectionne
+		// On se connecte a MySQL
+		$db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
+		mysqli_select_db($db,$database);
+		
+		$sql = 'SELECT * FROM moteurs';
+		$req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
+		
 
-        /* ************************************ */
-        /* FONCTION choix du simulateur */
-        /* ************************************ */
-        function Select_Simulateur($simu)
-        {
-                if ($translator && isset($_SESSION['authentification']))
-                {
-                        require_once ('./inc/translator.php');
-                        echo('<div class="pull-right">');
-                        include_once("./inc/flags.php");
-                        echo('</div>');
-                }
-                require 'inc/config.php';
+		echo '<form class="form-group" method="post" action="">';	
+		echo '<div class="form-inline">';
+		echo '<label for="OSSelect"></label>';
+		echo '<select class="form-control" name="OSSelect">';
 
-                // Formulaire de choix du moteur a selectionne
-                // On se connecte a MySQL
-                $db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
-                mysqli_select_db($db,$database);
+		while($data = mysqli_fetch_assoc($req))
+		{
+			$sel = "";
+			if ($data['id_os'] == $_SESSION['opensim_select']) {$sel = "selected";}
+			echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' '.$data['version'].'</option>';
+		}
+		
+		echo'</select>';
+		echo' <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i></button>';
+		echo '</div>';
+		echo'</form>';
 
-                $sql = 'SELECT * FROM moteurs';
-                $req = mysqli_query($db,$sql) or die('Erreur SQL !<p>'.$sql.'</p>'.mysqli_error($db));
+		mysqli_close($db);
+	}		
+	
+	/* ************************************ */
+	/* FONCTION affichage Entete Simulateur Selectionné et Niveau de securité */
+	/* ************************************ */
+	function Affichage_Entete($simu)
+	{		
+		if (isset($_POST['OSSelect'])) {$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
+		
+		return '<table style="width:100%"><tr>
+		<td align=left><p> <strong class="label label-info">'.INI_Conf_Moteur($simu, "name").' -- '.INI_Conf_Moteur($simu, "version").'</strong></p></td>
+		<td align=right><p class="pull-right"><span class="label label-danger">Security level <span class="label label-default">'.$_SESSION['privilege'].'</span></span></p></td>
+		</tr></table>';
+		 
+	}	
 
+	/* ************************************ */
+	/* FONCTION Defini affichage bouton en fonction du Niveau de securité */
+	/* ************************************ */
+	function Securite_Simulateur()
+	{		
+		if($_SESSION['osAutorise'] != '')
+		{
+			$osAutorise = explode("|", $_SESSION['osAutorise']);
+			// echo count($osAutorise);
+			// echo $_SESSION['osAutorise'];
+			for ($i = 0; $i < count($osAutorise); $i++)
+			{
+				if (INI_Conf_Moteur($_SESSION['opensim_select'], "osAutorise") == $osAutorise[$i])
+				{
+					$moteursOK = "OK";
+				}
+			}
+		}
+		else {$moteursOK = "NOK";}
+		return $moteursOK;
+	}		
+	
+	/* ************************************ */
+	/* FONCTION Recuperation du port Http du simulateur */
+	/* ************************************ */
+	function RecupPortHTTP_Opensim($filenameINPUT, $valRecherche)
+	{
+		if (file_exists($filenameINPUT)) {$filename = $filenameINPUT ;}
+	
+		if (!$fp = fopen($filename, "r")) 
+		{			echo '<p>Erreur: '.$filename.'</p>';		}
+	
+		$tabfich = file($filename); 
+		
+		for( $i = 1 ; $i < count($tabfich) ; $i++ )
+		{
+			$porthttp = strstr($tabfich[$i], $valRecherche);
+			
+			if($porthttp)
+			{
+				$posEgal = strpos($porthttp,'=');
+				$longueur = strlen($porthttp);
+			    $RecupPortHTTP_Opensim = substr($porthttp, $posEgal + 1);
+			}
+		}
+		fclose($fp);
+		return $RecupPortHTTP_Opensim;
+	}
+	
+	/* ************************************ */
+	/* FONCTION Recuperation du port Http RAdmin et du Password RAdmin du simulateur */
+	/* ************************************ */
+	function RecupRAdminParam_Opensim($filenameINPUT, $valRecherche)
+	{
+		if (file_exists($filenameINPUT)) {$filename = $filenameINPUT ;}
 
-                echo '<form class="form-group" method="post" action="">';
-                echo '<div class="form-inline">';
-                echo '<label for="OSSelect"></label>';
-                echo '<select class="form-control" name="OSSelect">';
+		// **** Recuperation du port http du serveur ******		
+		if (!$fp = fopen($filename, "r")) 
+		{			echo '<p>Erreur: '.$filename.'</p>';		}
+	
+		$tabfich = file($filename); 
+		
+		for( $i = 1 ; $i < count($tabfich) ; $i++ )
+		{
+			$porthttp = strstr($tabfich[$i], $valRecherche);
+			
+			if($porthttp)
+			{
+				$posEgal = strpos($porthttp,'=');
+				$longueur = strlen($porthttp);
+			    $RecupRAdminParam_Opensim = substr($porthttp, $posEgal + 1);
+			}
+		}
+		fclose($fp);
+		return $RecupRAdminParam_Opensim;
+	}
 
-                while($data = mysqli_fetch_assoc($req))
-                {
-                        $sel = "";
-                        if ($data['id_os'] == $_SESSION['opensim_select']) {$sel = "selected";}
-                        echo '<option value="'.$data['id_os'].'" '.$sel.'>'.$data['name'].' '.$data['version'].'</option>';
-                }
-
-                echo'</select>';
-                echo' <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i></button>';
-                echo '</div>';
-                echo'</form>';
-
-                mysqli_close($db);
-        }
-
-        /* ************************************ */
-        /* FONCTION affichage Entete Simulateur Selectionn¿ et Niveau de securit¿ */
-        /* ************************************ */
-        function Affichage_Entete($simu)
-        {
-                if (isset($_POST['OSSelect'])) {$_SESSION['opensim_select'] = trim($_POST['OSSelect']);}
-
-                return '<table style="width:100%"><tr>
-                <td align=left><p> <strong class="label label-info">'.INI_Conf_Moteur($simu, "name").' -- '.INI_Conf_Moteur($simu, "version").'</strong></p></td>
-                <td align=right><p class="pull-right"><span class="label label-danger">Security level <span class="label label-default">'.$_SESSION['privilege'].'</span></span></p></td>
-                </tr></table>';
-                 
-        }
-
-        /* ************************************ */
-        /* FONCTION Defini affichage bouton en fonction du Niveau de securit¿ */
-        /* ************************************ */
-        function Securite_Simulateur()
-        {
-                if($_SESSION['osAutorise'] != '')
-                {
-                        $osAutorise = explode("|", $_SESSION['osAutorise']);
-                        // echo count($osAutorise);
-                        // echo $_SESSION['osAutorise'];
-                        for ($i = 0; $i < count($osAutorise); $i++)
-                        {
-                                if (INI_Conf_Moteur($_SESSION['opensim_select'], "osAutorise") == $osAutorise[$i])
-                                {
-                                        $moteursOK = "OK";
-                                }
-                        }
-                }
-                else {$moteursOK = "NOK";}
-                return $moteursOK;
-        }
-
-        /* ************************************ */
-        /* FONCTION Recuperation du port Http du simulateur */
-        /* ************************************ */
-        function RecupPortHTTP_Opensim($filenameINPUT, $valRecherche)
-        {
-                if (file_exists($filenameINPUT)) {$filename = $filenameINPUT ;}
-
-                if (!$fp = fopen($filename, "r")) 
-                {                       echo '<p>Erreur: '.$filename.'</p>';            }
-
-                $tabfich = file($filename); 
-
-                for( $i = 1 ; $i < count($tabfich) ; $i++ )
-                {
-                        $porthttp = strstr($tabfich[$i], $valRecherche);
-
-                        if($porthttp)
-                        {
-                                $posEgal = strpos($porthttp,'=');
-                                $longueur = strlen($porthttp);
-                            $RecupPortHTTP_Opensim = substr($porthttp, $posEgal + 1);
-                        }
-                }
-                fclose($fp);
-                return $RecupPortHTTP_Opensim;
-        }
-
-        /* ************************************ */
-        /* FONCTION Recuperation du port Http RAdmin et du Password RAdmin du simulateur */
-        /* ************************************ */
-        function RecupRAdminParam_Opensim($filenameINPUT, $valRecherche)
-        {
-                if (file_exists($filenameINPUT)) {$filename = $filenameINPUT ;}
-
-                // **** Recuperation du port http du serveur ******
-                if (!$fp = fopen($filename, "r")) 
-                {                       echo '<p>Erreur: '.$filename.'</p>';            }
-
-                $tabfich = file($filename); 
-
-                for( $i = 1 ; $i < count($tabfich) ; $i++ )
-                {
-                        $porthttp = strstr($tabfich[$i], $valRecherche);
-
-                        if($porthttp)
-                        {
-                                $posEgal = strpos($porthttp,'=');
-                                $longueur = strlen($porthttp);
-                            $RecupRAdminParam_Opensim = substr($porthttp, $posEgal + 1);
-                        }
-                }
-                fclose($fp);
-                return $RecupRAdminParam_Opensim;
-        }
-
-        /* ************************************ */
-        /* FONCTION Recuperation en BDD de la config de OSMW */
-        /* ************************************ */
+	/* ************************************ */
+	/* FONCTION Recuperation en BDD de la config de OSMW */
+	/* ************************************ */
     function INI_Conf($cles, $valeur)
     {
         require 'inc/config.php';
-        // on se connecte ¿ MySQL
+        // on se connecte à MySQL
         $db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
         mysqli_select_db($db, $database);
         
@@ -186,13 +186,13 @@
         return $Version;
     }
 
-        /* ************************************ */
-        /* FONCTION Recuperation en BDD en fonction du simulateur s¿lectionn¿ */
-        /* ************************************ */
+	/* ************************************ */
+	/* FONCTION Recuperation en BDD en fonction du simulateur sélectionné */
+	/* ************************************ */
     function INI_Conf_Moteur($cles, $valeur)
     {
         require 'inc/config.php';
-        // On se connecte ¿ MySQL
+        // On se connecte à MySQL
         $db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
         mysqli_select_db($db, $database);
         $sql = "SELECT * FROM moteurs WHERE id_os ='".$cles."'";
@@ -219,7 +219,7 @@
             case "osAutorise":
                 $Version = $data['osAutorise'];
                 break;
-                        case "id_os":
+			case "id_os":
                 $Version = $data['id_os'];
                 break;
             }
@@ -227,25 +227,25 @@
         return $Version;
     }
 
-        /* ************************************ */
-        /* FONCTION Retourne le nombre de simulateur */
-        /* ************************************ */
+	/* ************************************ */
+	/* FONCTION Retourne le nombre de simulateur */
+	/* ************************************ */
     function NbOpensim()
     {
         require 'inc/config.php';
-        // on se connecte ¿ MySQL
+        // on se connecte à MySQL
         $db = mysqli_connect($hostnameBDD, $userBDD, $passBDD);
         mysqli_select_db($db, $database);
         $sql = "SELECT * FROM moteurs";
         $req = mysqli_query($db,$sql); 
-                $num_rows = mysqli_num_rows($req);
-                mysqli_close($db);
+		$num_rows = mysqli_num_rows($req);
+		mysqli_close($db);
         return $num_rows;
     }
 
-        /* ************************************ */
-        /* FONCTION generation de UUID pour region */
-        /* ************************************ */
+	/* ************************************ */
+	/* FONCTION generation de UUID pour region */
+	/* ************************************ */
     function GenUUID()
     {
         return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
@@ -255,29 +255,29 @@
         mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
     }
 
-        /* ************************************ */
-        /* FONCTION Test url complete pour image de la region s¿lectionn¿ */
-        /* ************************************ */
+	/* ************************************ */
+	/* FONCTION Test url complete pour image de la region sélectionné */
+	/* ************************************ */
     function Test_Url($server)
     {
         $tab = parse_url($server);
         $tab['port'] = isset($tab['port']) ? $tab['port'] : 40;
 
-                error_reporting(E_ERROR | E_PARSE);
-                if (!fsockopen($tab['host'], $tab['port'], $errno, $errstr, 5))
-                {
-                         return false;
-                } else 
-                {
-                         return true;
-                }
-
-           error_reporting(-1);
+		error_reporting(E_ERROR | E_PARSE);
+		if (!fsockopen($tab['host'], $tab['port'], $errno, $errstr, 5))
+		{
+			 return false;
+		} else 
+		{
+			 return true;
+		}
+	
+	   error_reporting(-1);
     }
-
-        /* ************************************ */
-        /* FONCTION Matrice pour transfert de fichiers */
-        /* ************************************ */   
+	
+ 	/* ************************************ */
+	/* FONCTION Matrice pour transfert de fichiers */
+	/* ************************************ */   
     function gen_matrice($cur)
     {
         global $PHP_SELF, $order, $asc, $order0;
@@ -318,10 +318,10 @@
              closedir($dir);
         }
     }
-
-        /* ************************************ */
-        /* FONCTION GestDirectory.php */
-        /* ************************************ */   
+	
+  	/* ************************************ */
+	/* FONCTION GestDirectory.php */
+	/* ************************************ */   
     /* Files List */
     function list_file($cur)
     {
@@ -329,8 +329,6 @@
 
         if ($dir = opendir($cur))
         {
-
-
             /* tableaux */
             $tab_dir = array();
             $tab_file = array();
@@ -338,23 +336,14 @@
             /* extraction */
             while($file = readdir($dir))
             {
-
                 if (is_dir($cur."/".$file))
                 {
-
                     if (!in_array($file, array(".", "..")))
                     {
-
-                        //echo ' '.$file.' '.$cur.' '; 
-
                         $tab_dir[] = addScheme($file, $cur, 'dir');
                     }
                 }
-                else {
-                      //added to show files loaded up
-                      //echo ' '.$file.'<BR>'; 
-                      $tab_file[] = addScheme($file, $cur, 'file');
-                     }
+                else {$tab_file[] = addScheme($file, $cur, 'file');}
             }
 
             /* affichage */
@@ -371,8 +360,7 @@
 
             foreach($tab_file as $elem) 
             {
-
-                if (assocExt($elem['ext']) === 'inconnu')
+                if (assocExt($elem['ext']) <> 'inconnu')
                 {
                     echo '<tr>';
                     echo '<td>';
@@ -386,20 +374,20 @@
                     echo '<td><h5>'.assocExt($elem['ext']).'</h5></td>';
                     echo '<td>';
 
-                                        $moteursOK = Securite_Simulateur();
-                                        /* ************************************ */
-                                        //SECURITE MOTEUR
-                                        $btnN1 = "disabled";$btnN2 = "disabled";$btnN3 = "disabled";
-                                        if ($_SESSION['privilege'] == 4) {$btnN1 = ""; $btnN2 = ""; $btnN3 = "";} // Niv 4
-                                        if ($_SESSION['privilege'] == 3) {$btnN1 = ""; $btnN2 = ""; $btnN3 = "";} // Niv 3
-                                        if ($_SESSION['privilege'] == 2) {$btnN1 = ""; $btnN2 = "";}              // Niv 2
-                                        if ($moteursOK == "OK" )
-                                        {
-                                                if($_SESSION['privilege'] == 1)
-                                                {$btnN1 = "";$btnN2 = "";$btnN3 = "";}
-                                        }
-                                         //SECURITE MOTEUR
-                                        /* ************************************ */
+					$moteursOK = Securite_Simulateur();
+					/* ************************************ */
+					//SECURITE MOTEUR
+					$btnN1 = "disabled";$btnN2 = "disabled";$btnN3 = "disabled";
+					if ($_SESSION['privilege'] == 4) {$btnN1 = ""; $btnN2 = ""; $btnN3 = "";} // Niv 4
+					if ($_SESSION['privilege'] == 3) {$btnN1 = ""; $btnN2 = ""; $btnN3 = "";} // Niv 3
+					if ($_SESSION['privilege'] == 2) {$btnN1 = ""; $btnN2 = "";}              // Niv 2
+					if ($moteursOK == "OK" )
+					{
+						if($_SESSION['privilege'] == 1)
+						{$btnN1 = "";$btnN2 = "";$btnN3 = "";}
+					}
+					 //SECURITE MOTEUR
+					/* ************************************ */
 
                     if ($_SESSION['privilege'] >= 3)
                     {
@@ -460,17 +448,12 @@
     {
         global $PHP_SELF, $order, $asc;
 
-      
-        echo ' TEST ';
-
         if ($dir = opendir($base)) 
         {
             $tab = array();
 
             while($entry = readdir($dir)) 
             {
-
-              echo ' TEST ';
                 if (is_dir($base."/".$entry) && !in_array($entry, array(".", "..")))
                 {
                     $tab[] = addScheme($entry, $base, 'dir');
@@ -480,7 +463,6 @@
             usort($tab, "cmp_name");
             foreach($tab as $elem) 
             {
-
                 $entry = $elem['name'];
                 /* chemin relatif a la racine */
                 $file = $base."/".$entry;
