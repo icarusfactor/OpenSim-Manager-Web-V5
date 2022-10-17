@@ -120,6 +120,14 @@ $passBDD    = "'. $pass .'";     	// password
 $database   = "'. $base .'"; 		// Name of BDD
 $hostnameSSH = "'.$domaine.'";		// Url of server
 
+/* The below 4 variables  will need to be added as entry but will have to manaully edit them for now.*/
+
+/*Save locations base */
+$baseSave = "../../";
+$baseBackups = "backups";
+$baseImages = "images";
+$slash = "/";
+$cache_dir = "/home/dyount/opensim.spotcheckit.org/cache/";
 
 /* name of files INI  */
 $FichierINIRegions = "Regions.ini";          // ou RegionConfig.ini
@@ -138,11 +146,11 @@ $languages=array(
 $recaptcha = false;
 $siteKey   = "***";
 $secret    = "***";
-$lang      = "fr";
+$lang      = "en";
 
 /* Position center of your MAP */
-    $px = 7000;
-    $py = 7000;
+    $px = 1000;
+    $py = 1000;
 
 ?>';
 

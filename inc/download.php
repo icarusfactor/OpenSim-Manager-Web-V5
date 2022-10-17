@@ -6,15 +6,16 @@ $filename = $_GET['file'];
 if(ini_get('zlib.output_compression'))
     ini_set('zlib.output_compression', 'Off');
 
-$file_extension = strtolower(substr(strrchr($filename,"."), 1));
+//$file_extension = strtolower(substr(strrchr($filename,"."), 1));
+$file_extension = substr(strrchr($filename,"."), 1);
 
 if ($filename == "") 
 {
     echo "<html><title> Download Script</title><body>";
     echo "ERROR: download file NOT SPECIFIED. USE inc/download.php?file=filepath";
     echo "</body></html>";
-    // $_SESSION[flash][danger] = "ERROR: download file NOT SPECIFIED. USE inc/download.php?file=filepath";
-    $_SESSION[flash][danger] = "Une erreur c'est produite, veuillez contacter l'administrateur du site ...";
+    $_SESSION["flash"]["danger"] = "ERROR: download file NOT SPECIFIED. USE inc/download.php?file=filepath".$filename ;
+    //$_SESSION["flash"]["danger"] = "Une erreur c'est produite, veuillez contacter l'administrateur du site ...";
     header('Location: ../index.php?a=10');
     exit;
 }
@@ -24,8 +25,8 @@ else if (!file_exists( $filename))
     echo "<html><title> Download Script</title><body>";
     echo "ERROR: File not found. USE inc/download.php?file=filepath";
     echo "</body></html>";
-    // $_SESSION[flash][danger] = "ERROR: File not found. USE inc/download.php?file=filepath";
-    $_SESSION[flash][danger] = "Une erreur c'est produite, veuillez contacter l'administrateur du site ...";
+    $_SESSION["flash"]["danger"] = "ERROR: File not found. USE inc/download.php?file=filepath".$filename;
+    //$_SESSION["flash"]["danger"] = "Une erreur c'est produite, veuillez contacter l'administrateur du site ...";
     header('Location: ../index.php?a=10');
     exit;
 };

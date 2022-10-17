@@ -1,7 +1,12 @@
 <?php 
+
+ // Create an image cache object
+require 'inc/class.cacheimg.php';
+
 if (isset($_SESSION['authentification']))
 {
 	echo Affichage_Entete($_SESSION['opensim_select']);
+	$cacheimg = new CacheIMG();
 	$moteursOK = Securite_Simulateur();
     /* ************************************ */
 	//SECURITE MOTEUR
@@ -60,7 +65,6 @@ if (isset($_SESSION['authentification']))
             $cpt = 0;
             echo  '<div class="row">';
 
-            #while (list($keyi, $vali) = each($tableauIni))
             foreach( $tableauIni as $keyi => $vali )
             {
                 $filename = $data['address']."/bin/".$FichierINIOpensim;
@@ -76,9 +80,18 @@ if (isset($_SESSION['authentification']))
 				}
 
                 //Recuperation des images de regions 
-        
-                $ImgMap = "http://".$tableauIni[$keyi]['ExternalHostName'].":".trim($srvOS)."/index.php?method=regionImage".str_replace("-", "", $tableauIni[$keyi]['RegionUUID']);
-                if (Test_Url($ImgMap) == false) {$ImgMap = "img/offline.jpg";}
+                $uuid = str_replace("-", "", $tableauIni[$keyi]['RegionUUID']);
+           
+                $location                               = explode(",", $tableauIni[$keyi]['Location']);
+		$coordX                                 = $location[0];
+		$coordY                                 = $location[1];
+
+		$ImgMap1 = "http://".$hostnameSSH.":".trim($srvOS)."/map-1-".$coordX."-".$coordY."-objects.jpg";
+		$ImgMap2 = $cacheimg->get_cache( $uuid , $ImgMap1 , 4  );
+		$uuid2 = trim($uuid, "-");
+		$ImgMap = "https://".$hostnameSSH."/cache/".$uuid2;
+
+                if (Test_Url($ImgMap1) == false) {$ImgMap = "img/offline.jpg";}
 
                 $TD_Hypergrid  = "";
                 $TD_Hypergrid .= '<div class="col-sm-6 col-md-4">';

@@ -26,16 +26,18 @@ if (isset($_SESSION['authentification']))
         // Actions Telecharger fichier
                 if ($_POST['cmd'] == "download")
                 { 
-            echo INI_Conf_Moteur($_SESSION['opensim_select'], "address")."bin/".$_POST['name_file']."<br />";
-                        $a = DownloadFile(INI_Conf_Moteur($_SESSION['opensim_select'], "address")."bin/".$_POST['name_file']);
+            //echo INI_Conf_Moteur($_SESSION['opensim_select'], "address")."bin/".$_POST['name_file']."<br />";
+            echo getenv("HOME").$slash.$hostnameSSH.$baseBackups.$_POST['name_file']."<br />";
+                        $a = DownloadFile(getenv("HOME").$slash.$hostnameSSH.$slash.$baseBackups.$slash.$_POST['name_file']);
         }
 
         // Actions supprimer fichier
                 if ($_POST['cmd'] == "delete")
                 {
                         //$cheminWIN = str_replace('/','\\',INI_Conf_Moteur($_SESSION['opensim_select'],"address")."bin/" );
-                        $cheminWIN = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."bin/";
-                        unlink($cheminWIN.$_POST['name_file']);
+                        //$cheminWIN = INI_Conf_Moteur($_SESSION['opensim_select'],"address");
+                        $cheminWIN = "/";
+                        unlink(getenv("HOME").$slash.$hostnameSSH.$slash.$baseBackups.$slash.$_POST['name_file']);
             
             echo '<div class="alert alert-success alert-anim" role="alert">';
             echo 'Fichier '.$cheminWIN.$_POST['name_file'].' supprime avec succes ...';
@@ -64,8 +66,9 @@ if (isset($_SESSION['authentification']))
     // <!-- liste des fichiers -->
     /* Repertoire initial a lister */
     $dir = "";
-    $dir = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."bin/" ;
-     echo '<h2>'.$dir.'</h2>';
+    //$dir = INI_Conf_Moteur( $_SESSION['opensim_select'], "address");
+    $dir = getenv("HOME").$slash.$hostnameSSH.$slash.$baseBackups;
+     //echo '<h2>'.$dir.'</h2>';
 
     //if ($dir) {list_file(rawurldecode($dir));}
     if ($dir) {list_file($dir);}

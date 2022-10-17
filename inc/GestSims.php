@@ -1,4 +1,8 @@
 <?php 
+
+ // Create an image cache object
+require 'inc/class.cacheimg.php';
+
 if (isset($_SESSION['authentification']))
 {
 	echo Affichage_Entete($_SESSION['opensim_select']);
@@ -118,11 +122,14 @@ if (isset($_SESSION['authentification']))
     //  Affichage page principale
     //******************************************************
 
-	echo Select_Simulateur($_SESSION['opensim_select']);
-	
+    $cacheimg = new CacheIMG();
+    echo Select_Simulateur($_SESSION['opensim_select']);
+
     // *** Lecture Fichier Regions.ini ***
- 	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."/bin/"."Regions/".$FichierINIRegions;	 
+ 	$filename2 = INI_Conf_Moteur($_SESSION['opensim_select'], "address")."bin/"."Regions/".$FichierINIRegions;	 
 	if (file_exists($filename2)) {$filename = $filename2;}
+
+
 	$tableauIni = parse_ini_file($filename, true);
 	if ($tableauIni == FALSE) {echo '<p>Error: Reading ini file '.$filename.'</p>';}
 	
@@ -184,8 +191,18 @@ if (isset($_SESSION['authentification']))
 #	while (list($key, $val) = each($tableauIni))
 	 foreach($tableauIni as $key => $val)
 	{
-		$ImgMap = "http://".$hostnameSSH.":".trim($srvOS)."/index.php?method=regionImage".str_replace("-","",$tableauIni[$key]['RegionUUID']);
-        if (Test_Url($ImgMap) == false)
+          //Cache file name.
+          $uuid = str_replace("-", "", $tableauIni[$key]['RegionUUID']);
+          $location                               = explode(",", $tableauIni[$key]['Location']);  
+          $coordX                                 = $location[0];
+	  $coordY                                 = $location[1];
+
+		$ImgMap1 = "http://".$hostnameSSH.":".trim($srvOS).$slash."map-1-".$coordX."-".$coordY."-objects.jpg"; 
+                $ImgMap2 = $cacheimg->get_cache( $uuid , $ImgMap1 , 4  );
+                $uuid2 = trim($uuid, "-");
+		$ImgMap = "https://".$hostnameSSH."/cache/".$uuid2;
+ 
+        if (Test_Url($ImgMap1) == false)
         {
             $i = '<p class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></p>';
             $ImgMap = "img/offline.jpg";

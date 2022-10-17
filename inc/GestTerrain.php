@@ -1,4 +1,9 @@
-<?php 
+<?php
+
+ // Create an image cache object
+require 'inc/class.cacheimg.php'; 
+
+ 
 if (isset($_SESSION['authentification']))
 {
 	echo Affichage_Entete($_SESSION['opensim_select']);
@@ -64,6 +69,7 @@ if (isset($_SESSION['authentification']))
     //  Affichage page principale
     //******************************************************
 
+        $cacheimg = new CacheIMG(); 
 	echo Select_Simulateur($_SESSION['opensim_select']);
 
 	// *** Lecture Fichier Region.ini ***
@@ -101,9 +107,15 @@ if (isset($_SESSION['authentification']))
 	foreach($tableauIni as $key => $val )
 	{
         $uuid = str_replace("-", "", $tableauIni[$key]['RegionUUID']);
-		$ImgMap = "http://".$hostnameSSH.":".trim($srvOS)."/index.php?method=regionImage".$uuid;
+        $location                               = explode(",", $tableauIni[$key]['Location']);
+	$coordX                                 = $location[0];
+	$coordY                                 = $location[1];
 
-        if (Test_Url($ImgMap) == false) {$ImgMap = "img/offline.jpg";}
+	$ImgMap1 = "http://".$hostnameSSH.":".trim($srvOS).$slash."map-1-".$coordX."-".$coordY."-objects.jpg";
+        $ImgMap2 = $cacheimg->get_cache( $uuid , $ImgMap1 , 4  );
+        $uuid2 = trim($uuid, "-"); 
+	$ImgMap = "https://".$hostnameSSH."/cache/".$uuid2;
+        if (Test_Url($ImgMap1) == false) { $ImgMap = "img/offline.jpg";}
 
         echo '<tr>';
         echo '<td><h5>'.$key.'</h5></td>';

@@ -327,6 +327,8 @@
     {
         global $PHP_SELF, $order, $asc, $order0;
 
+        require 'inc/config.php';
+
         if ($dir = opendir($cur))
         {
 
@@ -372,7 +374,7 @@
             foreach($tab_file as $elem) 
             {
 
-                if (assocExt($elem['ext']) === 'inconnu')
+                if (assocExt($elem['ext']) != 'inconnu')
                 {
                     echo '<tr>';
                     echo '<td>';
@@ -403,7 +405,7 @@
 
                     if ($_SESSION['privilege'] >= 3)
                     {
-                        $action = "inc/download.php?file=".INI_Conf_Moteur($_SESSION['opensim_select'], "address").$elem['name'];
+                        $action = "inc/download.php?file=".getenv("HOME").$slash.$hostnameSSH.$slash.$baseBackups.$slash.$elem['name'];
                         // $btnN3 = "";
                         echo '<form method="post" action="'.$action.'">';
                         echo '<input type="hidden" value="'.$_SESSION['opensim_select'].'" name="name_sim">';
