@@ -30,6 +30,8 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 4)
 	$filename5 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."OpenSim.log";
 	//$filename6 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."OpenSim.32BitLaunch.log";
 	$filename6 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."OpenSim.Console.log";
+	$filename10 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/Regions/"."Regions.ini";
+
 	$filename7 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."startuplogo.txt";
 	$filename8 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."startup_commands.txt";
 	$filename9 = INI_Conf_Moteur($_SESSION['opensim_select'],"address")."/bin/"."shutdown_commands.txt";
@@ -109,6 +111,17 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 4)
         echo '<div class="alert alert-danger alert-anim" role="alert"> <strong>OpenSim.Console.log</strong> '.$osmw_erreur_file_exist.'</div>';
 	}
 
+	if (file_exists($filename10))
+	{
+        $dispo = $dispo.'<p><input class="btn btn-default btn-block" type="submit" name="affichage" value="Regions.ini"></p>';
+	}
+
+	else if (!$_POST['affichage'])
+	{
+        echo '<div class="alert alert-danger alert-anim" role="alert"> <strong>Regions.ini</strong> '.$osmw_erreur_file_exist.'</div>';
+	}
+
+
 	if (file_exists($filename7))
 	{
         $dispo = $dispo.'<p><input class="btn btn-default btn-block" type="submit" name="affichage" value="startuplogo.txt"></p>';
@@ -151,6 +164,9 @@ if (isset($_SESSION['authentification']) && $_SESSION['privilege']>= 4)
 	if ($_POST['affichage'] == "OpenSim.log"){$fichier = $filename5;}
 	//if ($_POST['affichage'] == "OpenSim.32BitLaunch.log"){$fichier = $filename6;}
 	if ($_POST['affichage'] == "OpenSim.Console.log"){$fichier = $filename6;}
+	
+	if ($_POST['affichage'] == "Regions.ini"){$fichier = $filename10;}
+
 	if ($_POST['affichage'] == "startuplogo.txt"){$fichier = $filename7;}
 	if ($_POST['affichage'] == "startup_commands.txt"){$fichier = $filename8;}
 	if ($_POST['affichage'] == "shutdown_commands.txt"){$fichier = $filename9;}

@@ -19,7 +19,7 @@ class CacheIMG
 
 		
 	/* Gets the cache file if it exists, otherwise grabs and cache url */
-	function get_cache($file,$url,$hours = 24) {
+	function get_cache($file,$url,$hours = 0) {
 
         require 'inc/config.php';
 

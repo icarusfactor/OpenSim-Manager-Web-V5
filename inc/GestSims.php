@@ -198,7 +198,7 @@ if (isset($_SESSION['authentification']))
 	  $coordY                                 = $location[1];
 
 		$ImgMap1 = "http://".$hostnameSSH.":".trim($srvOS).$slash."map-1-".$coordX."-".$coordY."-objects.jpg"; 
-                $ImgMap2 = $cacheimg->get_cache( $uuid , $ImgMap1 , 4  );
+                $cacheimg->get_cache( $uuid , $ImgMap1 , 0  );
                 $uuid2 = trim($uuid, "-");
 		$ImgMap = "https://".$hostnameSSH."/cache/".$uuid2;
  

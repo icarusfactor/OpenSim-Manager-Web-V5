@@ -20,6 +20,24 @@ if (isset($_SESSION['authentification']))
     echo '<h1>'.$osmw_index_23.'</h1>';
     echo '<div class="clearfix"></div>';
 	
+
+
+	if (isset($_POST['exe']))
+	{
+        //This section requires the backend inotify script running. 
+        require 'inc/config.php';
+       
+        if ($_POST['exe'] == "Play")
+            {   
+             file_put_contents( $exec_dir."opensim_start","" );
+            } 
+
+        if ($_POST['exe'] == "Stop")
+            {
+             file_put_contents( $exec_dir."opensim_stop", "");
+            } 
+  
+        }
 	
     /* CONSTRUCTION de la commande pour ENVOI sur la console via  SSH */
 	if (isset($_POST['cmd']))
@@ -128,8 +146,26 @@ if (isset($_SESSION['authentification']))
 		echo '<input type="hidden" value="'.$versionrelog.'" name="versionreLog">';
 		echo '<button type="submit" class="btn btn-warning" value="Refresh" name="cmd" '.$btnN3.'><i class="glyphicon glyphicon-refresh"></i> Refresh <strong>Log</strong></button>';
 		echo '</form>';
-                echo '</div>';
 		
+                echo '&nbsp;';
+                echo '&nbsp;';
+                echo '&nbsp;';
+                echo '&nbsp;';
+                echo '&nbsp;';
+
+		echo '<form class="form-group" method="post" action="">';
+		echo '<input type="hidden" value="'.$versionrelog.'" name="versionreLog">';
+		echo '<button type="submit" class="btn btn-success" value="Play" name="exe" '.$btnN3.'><i class="glyphicon glyphicon-play"></i> Play </button>';
+		echo '</form>';
+
+                echo '&nbsp;';
+
+		echo '<form class="form-group" method="post" action="">';
+		echo '<input type="hidden" value="'.$versionrelog.'" name="versionreLog">';
+		echo '<button type="submit" class="btn btn-danger" value="Stop" name="exe" '.$btnN3.'><i class="glyphicon glyphicon-stop"></i> Stop </button>';
+		echo '</form>';
+
+                echo '</div>';
 
     echo '<pre>';
     echo '<form class="form-group" method="post" action="">';

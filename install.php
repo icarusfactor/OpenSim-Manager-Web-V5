@@ -128,6 +128,9 @@ $baseBackups = "backups";
 $baseImages = "images";
 $slash = "/";
 $cache_dir = "/home/dyount/opensim.spotcheckit.org/cache/";
+$cache_dir = $base_dir."cache/";
+$exec_dir = $base_dir."exec/";
+
 
 /* name of files INI  */
 $FichierINIRegions = "Regions.ini";          // ou RegionConfig.ini
